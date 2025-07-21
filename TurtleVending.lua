@@ -39,9 +39,13 @@ function print_menu()
   end
 end
 
-function find_item(id)
+function find_item(item)
+  if item == nil then
+    return 0
+  end
   for i = 1, 16 do
-    if turtle.getItemDetail(i)["name"] == id then
+    local current_item = turtle.getItemDetail(i)
+    if current_item ~= nil and current_item["name"] == item["id"] then
       return i
     end
   end
@@ -53,13 +57,14 @@ while true do
   local event, side, x, y = os.pullEvent("monitor_touch")
   if y%3 ~= 0 then
     local option = math.floor(y/3) + 1
-    local pos = find_item(ITEM_LIST[option]["id"])
+    local pos = find_item(ITEM_LIST[option])
     if pos ~= 0 then
       turtle.select(pos)
       turtle.dropUp(1)
     else
       monitor.setBackgroundColor(colors.red)
       monitor.setCursorPos(1,1)
+      monitor.clear()
       monitor_print("ERROR")
       monitor_print("No queda :(")
       sleep(2)
