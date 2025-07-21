@@ -41,7 +41,7 @@ end
 
 function find_item(item)
   if item == nil then
-    return 0
+    return -1
   end
   for i = 1, 16 do
     local current_item = turtle.getItemDetail(i)
@@ -58,10 +58,10 @@ while true do
   if y%3 ~= 0 then
     local option = math.floor(y/3) + 1
     local pos = find_item(ITEM_LIST[option])
-    if pos ~= 0 then
+    if pos > 0 then
       turtle.select(pos)
       turtle.dropUp(1)
-    else
+    elseif pos == 0 then
       monitor.setBackgroundColor(colors.red)
       monitor.setCursorPos(1,1)
       monitor.clear()
