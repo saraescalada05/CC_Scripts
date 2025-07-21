@@ -6,8 +6,8 @@ monitor.setCursorBlink(false)
 W,H = monitor.getSize()
 
 ITEM_LIST = {
-  {id="exposure:color_film",name="Color film", price=10},
-  {id="exposure:black_and_white_film",name="BnW film", price=5}
+  {id="exposure:color_film", name="Color film", price=10, currency="silver coins", currency_id="magic_coins:silver_coin"},
+  {id="exposure:black_and_white_film", name="B&W film", price=5, currency="silver coins", currency_id="magic_coins:silver_coin"}
 }
 
 function monitor_print(text)
@@ -32,7 +32,7 @@ function print_menu()
   monitor.setCursorPos(1,1)
   for i,v in ipairs(ITEM_LIST) do
     monitor_print(v.name)
-    monitor_print("Precio: " .. v.price)
+    monitor_print(v.price .. v.currency)
     if i ~= #ITEM_LIST then
       print_sep()
     end
@@ -65,8 +65,10 @@ while true do
       monitor.setBackgroundColor(colors.red)
       monitor.setCursorPos(1,1)
       monitor.clear()
-      monitor_print("ERROR")
-      monitor_print("No queda :(")
+      monitor_print("-----ERROR:-----")
+      monitor_print("    ITEM  NO    ")
+      monitor_print("   DISPONIBLE   ")
+      monitor_print("       :(       ")
       sleep(2)
       monitor.setBackgroundColor(colors.black)
     end
