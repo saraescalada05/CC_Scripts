@@ -1,4 +1,5 @@
 local monitor = peripheral.find("monitor")
+local barrel = peripheral.find("minecraft:barrel")
 
 monitor.setTextScale(0.5)
 monitor.setCursorBlink(false)
@@ -51,51 +52,12 @@ function menu_selection()
 end
 
 function item_stock(item)
-  local stock = 0
-  for i = 1, 16 do
-    local current_item = turtle.getItemDetail(i)
-    if current_item ~= nil and current_item["name"] == item["id"] then
-      stock = stock + turtle.getItemCount(i)
-    end
-  end
-  return stock
-end
-
-function find_item(item)
-  for i = 1, 16 do
-    local current_item = turtle.getItemDetail(i)
-    if current_item ~= nil and current_item["name"] == item["id"] then
-      return i
-    end
-  end
-  return 0
-end
-
-function first_empty_slot()
-  for i = 1, 16 do
-    local current_item = turtle.getItemDetail(i)
-    if current_item == nil then
-      return i
-    end
+  for slot, item in pairs(barrel.list()) do
+    print(item.name)
+    print(("%d x %s in slot %d"):format(item.count, item.name, slot))
   end
 end
 
-function payment(item)
-  local amount = item[price]
-  local pay_method = item[currency_id]
-  local payed = 0
-  while payed < amount do
-    local fes = first_empty_slot()
-    local pos_in = turtle.find_item({id=pay_method})
-    turtle.suck()
-    if turtle.getItemDetail(fes)["name"] ~= pay_method then
-      turtle.dropUp(fes)
-      error_wrong_payment()
-    elseif turtle.getItemCount(pos_in)>payed then
-      payed = payed + 1
-    end
-  end
-end
 
 function error_no_item()
   monitor.setBackgroundColor(colors.red)
@@ -114,15 +76,15 @@ function error_wrong_payment()
   monitor.setCursorPos(1,1)
   monitor.clear()
   monitor_print("-----ERROR:-----")
-  monitor_print("     MÉTODO     ")
+  monitor_print("     METODO     ")
   monitor_print("    DE  PAGO    ")
-  monitor_print("    INVÁLIDO    ")
+  monitor_print("    INVALIDO    ")
   monitor_print("       :(       ")
   sleep(2)
   monitor.setBackgroundColor(colors.black)
 end
 
-function congrats_pay_compl()
+function congrats_pay_completed()
   monitor.setBackgroundColor(colors.green)
   monitor.setCursorPos(1,1)
   monitor.clear()
@@ -141,11 +103,7 @@ while true do
     option = menu_selection()
   until (option~=nil)
   local item = ITEM_LIST[option]
-  if item_stock(item) == 0 then
-   error_no_item()
-  else
-    local pos = find_item(item)
-    payment(item)
-    turtle.dropUp(pos)
-  end
+  item_stock(item)
+  
+
 end
